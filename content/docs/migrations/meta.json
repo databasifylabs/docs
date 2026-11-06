@@ -1,0 +1,7 @@
+{
+  "title": "Migrations",
+  "defaultOpen": true,
+  "pages": [
+    "migrating-a-database"
+  ]
+}

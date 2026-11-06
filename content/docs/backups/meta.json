@@ -1,0 +1,8 @@
+{
+  "title": "Backups",
+  "defaultOpen": true,
+  "pages": [
+    "storage-providers",
+    "point-in-time-recovery"
+  ]
+}

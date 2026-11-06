@@ -1,0 +1,70 @@
+---
+title: Introduction
+description: What Databasify is and how it works.
+---
+
+import { ArrowRight, Clock, Database, Server, ShieldCheck, Shuffle } from 'lucide-react';
+
+An open-source, self-hostable DBaaS alternative to DigitalOcean Managed Databases, Amazon RDS & Aiven that lets you run PostgreSQL, MySQL, MariaDB, MongoDB, Valkey and Redis, from a single node to a highly available cluster with automatic failover, point-in-time backups and TLS, on your own servers.
+
+It is open source under the Apache 2.0 license. The code is on [GitHub](https://github.com/databasifylabs/databasify).
+
+<DashboardScreenshot />
+
+## Install
+
+On a Linux server with at least 1 GB of memory:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/databasifylabs/databasify/0.x/scripts/install.sh | sudo bash
+```
+
+## Features
+
+<Cards>
+  <Card title="Six engines" icon={<Database />}>
+    PostgreSQL, MySQL, MariaDB, MongoDB, Valkey and Redis, from a single node
+    to a highly available cluster.
+  </Card>
+  <Card title="Failover" icon={<Shuffle />}>
+    A primary with standbys, automatic failover and read-only nodes.
+  </Card>
+  <Card title="TLS and your own domain" icon={<ShieldCheck />}>
+    TLS on every connection and hostnames on your domain that follow the
+    primary.
+  </Card>
+  <Card title="Point-in-time recovery" icon={<Clock />}>
+    Daily base backups and archived changes in any S3-compatible bucket.
+  </Card>
+  <Card title="Migrations" icon={<ArrowRight />}>
+    Copy an existing database once, or keep it in sync until you cut over.
+  </Card>
+  <Card title="Your servers" icon={<Server />}>
+    Any server over SSH, or new servers on DigitalOcean, Hetzner, Vultr or
+    Linode.
+  </Card>
+</Cards>
+
+## How it works
+
+- You install Databasify on one Linux server. It runs as a set of Docker containers.
+- You add the servers that will run your databases, either existing servers over SSH or new servers that Databasify orders from a [server provider](/servers/server-providers/).
+- Databasify connects to those servers over SSH, installs Docker, and runs each database node in its own container.
+- Each engine uses its own high-availability tooling: Patroni and etcd for PostgreSQL, InnoDB Cluster for MySQL, Galera for MariaDB, a replica set for MongoDB and Sentinel for Valkey and Redis. Failover keeps working while the Databasify app is down.
+- Every minute Databasify reads the status and metrics of each node over SSH. There is no agent to install.
+
+## What you get
+
+- A primary with optional standbys, automatic failover and read-only nodes. See [Nodes](/databases/nodes/).
+- TLS on every client connection, with a private CA per database. See [Connecting](/databases/connecting/).
+- Hostnames on your own domain that follow the primary. See [Custom domains](/dns/custom-domains/).
+- Users, databases, PostgreSQL connection pools, trusted sources, metrics, logs and email alerts.
+- Point-in-time recovery to an S3-compatible bucket. See [Backups](/backups/point-in-time-recovery/).
+- Migrations from an existing database. See [Migrating](/migrations/migrating-a-database/).
+- Automatic patch updates in a weekly maintenance window.
+
+## Next steps
+
+1. Check the [requirements](/getting-started/requirements/).
+2. [Install Databasify](/getting-started/installation/).
+3. [Create your first database](/getting-started/first-database/).

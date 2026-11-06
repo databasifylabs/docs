@@ -1,0 +1,9 @@
+{
+  "title": "Servers",
+  "defaultOpen": true,
+  "pages": [
+    "adding-a-server",
+    "server-providers",
+    "operating-systems"
+  ]
+}

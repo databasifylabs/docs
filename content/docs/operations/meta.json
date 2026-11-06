@@ -1,0 +1,9 @@
+{
+  "title": "Operations",
+  "defaultOpen": true,
+  "pages": [
+    "updates-and-maintenance",
+    "monitoring-and-alerts",
+    "activity-logs"
+  ]
+}

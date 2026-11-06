@@ -1,0 +1,7 @@
+{
+  "title": "DNS",
+  "defaultOpen": true,
+  "pages": [
+    "custom-domains"
+  ]
+}

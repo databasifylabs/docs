@@ -1,0 +1,13 @@
+{
+  "title": "Databases",
+  "defaultOpen": true,
+  "pages": [
+    "engines",
+    "nodes",
+    "connecting",
+    "users-and-schemas",
+    "connection-pools",
+    "settings",
+    "failover-and-recovery"
+  ]
+}

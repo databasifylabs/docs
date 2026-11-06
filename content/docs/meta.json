@@ -1,0 +1,14 @@
+{
+  "title": "Databasify",
+  "pages": [
+    "getting-started",
+    "servers",
+    "databases",
+    "backups",
+    "migrations",
+    "dns",
+    "operations",
+    "self-hosting",
+    "project"
+  ]
+}
