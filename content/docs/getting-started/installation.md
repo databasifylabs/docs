@@ -6,7 +6,7 @@ description: Install Databasify on a Linux server.
 Run this on a Linux server with at least 1 GB of memory:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/databasifylabs/databasify/0.x/scripts/install.sh | sudo bash
+curl -fsSL https://get.databasify.io/install.sh | sudo bash
 ```
 
 The script:

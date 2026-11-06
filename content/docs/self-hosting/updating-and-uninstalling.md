@@ -8,7 +8,7 @@ Databasify is installed in `/opt/databasify`. Its settings are in `/opt/databasi
 ## Update
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/databasifylabs/databasify/0.x/scripts/update.sh | sudo bash
+curl -fsSL https://get.databasify.io/update.sh | sudo bash
 ```
 
 The update script downloads the latest release files, adds any new settings to `.env` without changing your existing ones, pulls the new images, restarts Databasify and waits until it is healthy. It then removes old Databasify images.
@@ -18,7 +18,7 @@ The image version comes from `DATABASIFY_VERSION` in `.env`: `latest`, or a rele
 ## Uninstall
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/databasifylabs/databasify/0.x/scripts/uninstall.sh | sudo bash
+curl -fsSL https://get.databasify.io/uninstall.sh | sudo bash
 ```
 
 This stops Databasify. Its data stays in `/opt/databasify` and its Docker volumes, and the install script starts it again.
@@ -26,7 +26,7 @@ This stops Databasify. Its data stays in `/opt/databasify` and its Docker volume
 To remove Databasify and all its data (servers, the list of databases, keys), add `--purge`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/databasifylabs/databasify/0.x/scripts/uninstall.sh | sudo bash -s -- --purge
+curl -fsSL https://get.databasify.io/uninstall.sh | sudo bash -s -- --purge
 ```
 
 It asks for confirmation. Without a terminal, set `DATABASIFY_YES=true` to confirm.
