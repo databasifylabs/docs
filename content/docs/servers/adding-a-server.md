@@ -3,7 +3,7 @@ title: Adding a server
 description: Add an existing Linux server over SSH.
 ---
 
-Every database node runs on a server you add to Databasify. A server runs at most one database node. Go to **Servers → Add server** and choose **Existing server**, or choose **New server at a provider** to have Databasify order one (see [Server providers](/servers/server-providers/)).
+Every database node runs on a server you add to Databasify. A server runs at most one database node. Servers belong to the current [project](/getting-started/projects/), and server names are unique across all projects. Go to **Servers → Add server** and choose **Existing server**, or choose **New server at a provider** to have Databasify order one (see [Server providers](/servers/server-providers/)).
 
 ## Existing server over SSH
 
@@ -29,9 +29,11 @@ Standby and read-only nodes must share the primary's private network. Choose one
 
 You can change the network on the server page while the server is not part of a database.
 
+Networks are listed under **Providers → Private networks**, where you can move them to another project. A network can only be removed once no server uses it.
+
 ## On the server page
 
 - **Terminal:** a live root shell over SSH in the browser. It closes after 15 minutes without typing or when you leave the page.
 - **Linux users:** add isolated users with their own home directory and no sudo access.
-- **Actions:** refresh details, reboot, retry a failed setup, or delete the server. Deleting makes Databasify forget the server; for a provider server you can also destroy it at the provider.
+- **Actions:** refresh details, reboot, retry a failed setup, move it to another project, or remove the server. Removing makes Databasify forget the server; for a provider server you can also destroy it at the provider. A server that is part of a database can neither be removed nor moved on its own: remove its node from the database first, or move the whole database.
 - **Activity:** every change Databasify made on the server, with its output. See [Activity logs](/operations/activity-logs/).

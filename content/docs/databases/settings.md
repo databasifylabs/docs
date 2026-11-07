@@ -8,7 +8,7 @@ The database's **Settings** tab holds:
 - **Version:** the running version, whether an update is available, and **Check for updates**. See [Updates and maintenance](/operations/updates-and-maintenance/).
 - **Maintenance window:** the weekly hour when patch updates install.
 - **Persistence** (Valkey and Redis only).
-- **Domain:** hostnames from one of your DNS domains. See [Custom domains](/dns/custom-domains/).
+- **Domain:** hostnames from one of the project's DNS domains. See [Custom domains](/dns/custom-domains/).
 - **Failover:** move the primary to a standby. See [Failover and recovery](/databases/failover-and-recovery/).
 - **Advanced configuration** of the engine.
 - **Destroy database.**
