@@ -1,0 +1,8 @@
+{
+  "title": "Plugins",
+  "defaultOpen": true,
+  "pages": [
+    "managing-plugins",
+    "writing-plugins"
+  ]
+}

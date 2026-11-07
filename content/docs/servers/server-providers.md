@@ -34,4 +34,4 @@ The server logs in as `root` with the Databasify SSH key, and password login is 
 - A provider account cannot be removed while Databasify still has servers or networks from it, in any project. Remove those servers and networks first.
 - Removing a provider account makes Databasify forget the token. Nothing changes in the account itself.
 - **Move** on the **Providers** page moves an account to another project. Its servers stay where they are and keep using it.
-- Plugins can add more providers.
+- [Plugins](/plugins/managing-plugins/) can add more providers.

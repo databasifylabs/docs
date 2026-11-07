@@ -3,7 +3,7 @@ title: Custom domains
 description: Hostnames on your own domain that follow the primary.
 ---
 
-With a DNS account connected, Databasify creates hostnames for every database under `db.<your-domain>` and keeps them pointing at the right nodes. Cloudflare is the supported DNS provider. Plugins can add others.
+With a DNS account connected, Databasify creates hostnames for every database under `db.<your-domain>` and keeps them pointing at the right nodes. Cloudflare is the supported DNS provider. [Plugins](/plugins/managing-plugins/) can add others.
 
 ## Connect Cloudflare
 
