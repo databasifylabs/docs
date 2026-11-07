@@ -3,11 +3,11 @@ title: Storage providers
 description: S3-compatible buckets for point-in-time recovery.
 ---
 
-Point-in-time recovery archives to an S3-compatible bucket, such as AWS S3, Cloudflare R2, DigitalOcean Spaces, Backblaze B2, Wasabi or MinIO. Add a bucket once, then pick it on any database.
+Point-in-time recovery archives to an S3-compatible bucket, such as AWS S3, Cloudflare R2, DigitalOcean Spaces, Backblaze B2, Wasabi or MinIO. Add a bucket once, then pick it on any database in the same [project](/getting-started/projects/).
 
 ## Add storage
 
-Go to **Storage → Add storage** and fill in:
+In the project, go to **Storage → Add storage** and fill in:
 
 - **Endpoint:** the HTTPS address of the S3 API, without the bucket, for example `https://s3.us-east-1.amazonaws.com`.
 - **Region:** for example `us-east-1`. Use `auto` for Cloudflare R2 and `us-east-1` for MinIO.
@@ -15,7 +15,7 @@ Go to **Storage → Add storage** and fill in:
 - **Path prefix** (optional): a folder inside the bucket, such as `databasify`.
 - **Path-style addressing:** sends requests to `endpoint/bucket` instead of `bucket.endpoint`. Turn it on for MinIO and services without per-bucket hostnames.
 - **Access key** and **Secret key.**
-- **Storage name:** how it appears in Databasify.
+- **Storage name:** how it appears in Databasify. Names are unique within a project.
 
 Choose **Test and add**. Databasify writes, reads and deletes a test object before it saves the storage. You can run **Test connection** again later.
 
@@ -28,5 +28,7 @@ Choose **Test and add**. Databasify writes, reads and deletes a test object befo
 ## Editing and removing
 
 - While a database archives to a storage, its endpoint, bucket and path stay fixed. You can still rename it or rotate its keys.
-- A storage cannot be removed while a database archives to it. Turn off that database's point-in-time recovery first.
+- A storage cannot be removed while a database in any project archives to it. Turn off that database's point-in-time recovery first.
+- **Move** on the **Storage** page moves a storage to another project. Databases that archive to it keep archiving there.
+- To use the same bucket in another project, add it there too.
 - Removing a storage makes Databasify forget it and its keys. Archives already in the bucket stay there.

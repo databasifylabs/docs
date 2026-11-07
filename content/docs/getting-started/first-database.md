@@ -3,6 +3,8 @@ title: First database
 description: Add a server and create your first database.
 ---
 
+Everything you add lives in the current project, shown at the top of the sidebar. Setup creates a project named `Default`. See [Projects](/getting-started/projects/).
+
 ## 1. Add a server
 
 Go to **Servers** and choose **Add server**. Pick an existing server over SSH, or a new server at a connected provider. See [Adding a server](/servers/adding-a-server/).
