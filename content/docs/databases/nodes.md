@@ -14,7 +14,7 @@ The primary serves reads and writes. Every database has exactly one.
 A standby keeps a full copy of the data and takes over if the primary fails.
 
 - A database has at most 2 standbys.
-- A standby's server must share the primary's private network and have about 1 GB of memory.
+- A standby's server must share the primary's private network. At least 1 GB of memory is recommended for every node.
 - With a primary and 2 standbys, failover is automatic. With a primary and 1 standby, use **Recover** when the primary goes down. Valkey and Redis also count read-only nodes toward the 3 voting nodes Sentinel needs.
 
 Clients can connect to standbys directly to spread read traffic. See [Connecting](/databases/connecting/).

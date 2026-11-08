@@ -15,6 +15,8 @@ The update script downloads the latest release files, adds any new settings to `
 
 Databasify runs the `latest` image. To stay on one release, add `DATABASIFY_VERSION` to `.env` with a release tag, for example `DATABASIFY_VERSION=0.2.0`.
 
+The running version shows next to the Databasify logo in the sidebar and at the bottom of the sign-in page.
+
 ## Uninstall
 
 ```bash
