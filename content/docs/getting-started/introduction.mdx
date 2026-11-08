@@ -47,7 +47,7 @@ curl -fsSL https://get.databasify.io/install.sh | sudo bash
 
 ## How it works
 
-- You install Databasify on one Linux server. It runs as a set of Docker containers.
+- You install Databasify on one Linux server. It runs as one Docker container.
 - You add the servers that will run your databases, either existing servers over SSH or new servers that Databasify orders from a [server provider](/servers/server-providers/).
 - Databasify connects to those servers over SSH, installs Docker, and runs each database node in its own container.
 - Each engine uses its own high-availability tooling: Patroni and etcd for PostgreSQL, InnoDB Cluster for MySQL, Galera for MariaDB, a replica set for MongoDB and Sentinel for Valkey and Redis. Failover keeps working while the Databasify app is down.

@@ -5,6 +5,7 @@
     "introduction",
     "requirements",
     "installation",
+    "docker-image",
     "updating-and-uninstalling",
     "first-database",
     "projects"

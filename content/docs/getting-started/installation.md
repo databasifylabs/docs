@@ -39,6 +39,8 @@ To use a port other than 80, change `HTTP_PORT` in `/opt/databasify/.env`, for e
 
 If Databasify is already installed on the server, the installer changes nothing and shows the [update command](/getting-started/updating-and-uninstalling/) instead.
 
+To run Databasify on a container platform or a Docker host without the installer, see [Install with the Docker image](/getting-started/docker-image/).
+
 ## Create the owner account
 
 Open the address the installer printed. The first visit asks you to create the owner account with your name, email address and password. There is no public sign-up after that.

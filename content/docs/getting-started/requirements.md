@@ -12,7 +12,7 @@ Databasify itself runs on one Linux server with:
 - root access (the installer runs with `sudo`)
 - port 80 free, or another port you set with `HTTP_PORT`
 
-The installer installs Docker if it is missing.
+The installer installs Docker if it is missing. To run the image yourself instead, see [Install with the Docker image](/getting-started/docker-image/).
 
 The installer sizes Databasify's background workers from the server's memory and CPUs and writes the numbers to `/opt/databasify/.env` as `HORIZON_*_MAX_PROCESSES`. On 1 GB it runs one worker per queue and may use swap when busy. To set the numbers yourself, change them in `.env`, then run `docker compose up -d` in `/opt/databasify`. Each update recomputes them and asks before it changes any value you have.
 

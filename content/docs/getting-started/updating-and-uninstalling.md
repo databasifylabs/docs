@@ -11,7 +11,7 @@ Databasify is installed in `/opt/databasify`. All its settings are in `/opt/data
 curl -fsSL https://get.databasify.io/update.sh | sudo bash
 ```
 
-The update script downloads the latest release files, adds any new settings to `.env` without changing your existing ones, pulls the new images, restarts Databasify and waits until it is healthy. It then removes old Databasify images. The full output is in `/opt/databasify/update.log`.
+The update script downloads the latest release files, adds any new settings to `.env` without changing your existing ones, pulls the new images, restarts Databasify and waits until it is healthy. If database operations are running, it lists them and asks before the restart stops them; without a terminal it restarts and names what it interrupted. Work a restart stops is marked as interrupted when Databasify starts again. It then removes old Databasify images. The full output is in `/opt/databasify/update.log`.
 
 The update also recomputes the background worker counts (`HORIZON_*_MAX_PROCESSES`) from the server's memory and CPUs. If they differ from the values in `.env`, it shows both and asks before changing them. Without a terminal it keeps your values; set `DATABASIFY_YES=true` to accept the new ones.
 
