@@ -14,7 +14,7 @@ Databasify itself runs on one Linux server with:
 
 The installer installs Docker if it is missing.
 
-Databasify sizes its background workers from the server's memory and CPUs when it starts. On 1 GB it runs one worker per queue and may use swap when busy. To set the numbers yourself, add `HORIZON_*_MAX_PROCESSES` values to `/opt/databasify/.env`, then run `docker compose up -d` in `/opt/databasify`.
+The installer sizes Databasify's background workers from the server's memory and CPUs and writes the numbers to `/opt/databasify/.env` as `HORIZON_*_MAX_PROCESSES`. On 1 GB it runs one worker per queue and may use swap when busy. To set the numbers yourself, change them in `.env`, then run `docker compose up -d` in `/opt/databasify`. Each update recomputes them and asks before it changes any value you have.
 
 ## Database servers
 

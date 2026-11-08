@@ -3,7 +3,7 @@ title: Updating and uninstalling Databasify
 description: Update the Databasify app or remove it from its server.
 ---
 
-Databasify is installed in `/opt/databasify`. Its settings are in `/opt/databasify/.env`, and its data is in Docker volumes.
+Databasify is installed in `/opt/databasify`. All its settings are in `/opt/databasify/.env`, including the app key and the Reverb credentials, and its data is in Docker volumes. A backup needs both the `.env` file and the `databasify_storage` volume: without the app key, the stored server keys and database passwords can't be read.
 
 ## Update
 
@@ -12,6 +12,8 @@ curl -fsSL https://get.databasify.io/update.sh | sudo bash
 ```
 
 The update script downloads the latest release files, adds any new settings to `.env` without changing your existing ones, pulls the new images, restarts Databasify and waits until it is healthy. It then removes old Databasify images. The full output is in `/opt/databasify/update.log`.
+
+The update also recomputes the background worker counts (`HORIZON_*_MAX_PROCESSES`) from the server's memory and CPUs. If they differ from the values in `.env`, it shows both and asks before changing them. Without a terminal it keeps your values; set `DATABASIFY_YES=true` to accept the new ones.
 
 Databasify runs the `latest` image (`DATABASIFY_VERSION=latest` in `.env`). To stay on one release, change it to a release tag, for example `DATABASIFY_VERSION=0.2.0`.
 
