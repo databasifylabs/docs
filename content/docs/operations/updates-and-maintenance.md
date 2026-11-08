@@ -24,4 +24,4 @@ Databasify renews TLS certificates on its own. A daily check at 02:00 UTC renews
 
 ## Updating Databasify itself
 
-Engine updates are separate from updates to the Databasify app. See [Updating and uninstalling](/self-hosting/updating-and-uninstalling/).
+Engine updates are separate from updates to the Databasify app. See [Updating and uninstalling](/getting-started/updating-and-uninstalling/).
