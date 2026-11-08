@@ -37,7 +37,7 @@ You can answer the domain question ahead of time with the `DATABASIFY_DOMAIN` en
 
 To use a port other than 80, change `HTTP_PORT` in `/opt/databasify/.env`, for example `HTTP_PORT=8080`, then recreate the containers.
 
-If `/opt/databasify/.env` already exists, the installer keeps it.
+If Databasify is already installed on the server, the installer changes nothing and shows the [update command](/self-hosting/updating-and-uninstalling/) instead.
 
 ## Create the owner account
 
