@@ -11,9 +11,9 @@ Databasify is installed in `/opt/databasify`. Its settings are in `/opt/databasi
 curl -fsSL https://get.databasify.io/update.sh | sudo bash
 ```
 
-The update script downloads the latest release files, adds any new settings to `.env` without changing your existing ones, pulls the new images, restarts Databasify and waits until it is healthy. It then removes old Databasify images.
+The update script downloads the latest release files, adds any new settings to `.env` without changing your existing ones, pulls the new images, restarts Databasify and waits until it is healthy. It then removes old Databasify images. The full output is in `/opt/databasify/update.log`.
 
-Databasify runs the `latest` image. To stay on one release, add `DATABASIFY_VERSION` to `.env` with a release tag, for example `DATABASIFY_VERSION=0.2.0`.
+Databasify runs the `latest` image (`DATABASIFY_VERSION=latest` in `.env`). To stay on one release, change it to a release tag, for example `DATABASIFY_VERSION=0.2.0`.
 
 The running version shows next to the Databasify logo in the sidebar and at the bottom of the sign-in page.
 

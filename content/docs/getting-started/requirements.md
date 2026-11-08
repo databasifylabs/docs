@@ -7,6 +7,7 @@ description: What you need to run Databasify and its databases.
 
 Databasify itself runs on one Linux server with:
 
+- Ubuntu 24.04 or 26.04, Debian 12 or 13, Rocky Linux 9 or AlmaLinux 9 (the installer stops on any other system before it changes anything)
 - at least 1 GB of memory, 2 GB recommended
 - root access (the installer runs with `sudo`)
 - port 80 free, or another port you set with `HTTP_PORT`
