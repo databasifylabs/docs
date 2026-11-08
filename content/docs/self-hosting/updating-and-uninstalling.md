@@ -13,7 +13,7 @@ curl -fsSL https://get.databasify.io/update.sh | sudo bash
 
 The update script downloads the latest release files, adds any new settings to `.env` without changing your existing ones, pulls the new images, restarts Databasify and waits until it is healthy. It then removes old Databasify images.
 
-The image version comes from `DATABASIFY_VERSION` in `.env`: `latest`, or a release tag such as `0.2.0`.
+Databasify runs the `latest` image. To stay on one release, add `DATABASIFY_VERSION` to `.env` with a release tag, for example `DATABASIFY_VERSION=0.2.0`.
 
 ## Uninstall
 

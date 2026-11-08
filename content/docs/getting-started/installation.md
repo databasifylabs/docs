@@ -20,11 +20,19 @@ When it finishes, it prints the address to open.
 
 ## Domain and HTTPS
 
-- **With a domain:** Databasify serves HTTPS and Caddy requests a Let's Encrypt certificate once the domain points to the server. The installer warns you if the domain does not resolve to this server yet.
-- **Behind Cloudflare's proxy:** answer yes when the installer asks whether the domain is proxied by Cloudflare. Caddy then uses an internal certificate, and you set Cloudflare's SSL/TLS mode to **Full**.
-- **Without a domain:** Databasify serves plain HTTP on the IP address and the port you choose (80 by default).
+Databasify serves plain HTTP on port 80. HTTPS comes from Cloudflare's proxy:
 
-You can also answer the questions ahead of time with environment variables: `DATABASIFY_DOMAIN`, `DATABASIFY_CLOUDFLARE_PROXY`, `DATABASIFY_HTTP_PORT` and `DATABASIFY_HTTPS_PORT`.
+1. In Cloudflare, add an `A` record for the domain that points to the server, with the proxy on (orange cloud).
+2. Set Cloudflare's **SSL/TLS** mode to **Flexible**.
+3. Enter the domain when the installer asks. It sets `APP_URL` to `https://<your-domain>`.
+
+Visitors reach Databasify over HTTPS, and Cloudflare forwards the requests to the server over HTTP.
+
+Without a domain, Databasify serves plain HTTP on the server's IP address.
+
+You can answer the domain question ahead of time with the `DATABASIFY_DOMAIN` environment variable.
+
+To use a port other than 80, add `HTTP_PORT` to `/opt/databasify/.env`, for example `HTTP_PORT=8080`, then recreate the containers.
 
 If `/opt/databasify/.env` already exists, the installer keeps it.
 
