@@ -24,10 +24,12 @@ When it finishes, it prints the address to open. The full output of every step i
 Databasify serves plain HTTP on port 80. HTTPS comes from Cloudflare's proxy:
 
 1. In Cloudflare, add an `A` record for the domain that points to the server, with the proxy on (orange cloud).
-2. Set Cloudflare's **SSL/TLS** mode to **Flexible**.
+2. Set the encryption mode to **Flexible**: open **SSL/TLS → Overview**, choose **Configure** and pick **Flexible**. The server has no certificate, so **Full** and **Full (strict)** fail with error 521 or 525.
 3. Enter the domain when the installer asks. It sets `APP_URL` to `https://<your-domain>`.
 
 Visitors reach Databasify over HTTPS, and Cloudflare forwards the requests to the server over HTTP.
+
+The SSL/TLS mode applies to the whole Cloudflare zone. If other sites on the same domain need **Full**, keep the zone on **Full** and add a configuration rule (**Rules → Configuration Rules**) for the Databasify hostname that sets **SSL** to **Flexible**.
 
 Without a domain, Databasify serves plain HTTP on the server's IP address.
 
