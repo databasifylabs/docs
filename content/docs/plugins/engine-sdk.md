@@ -11,7 +11,7 @@ Each Databasify release runs one SDK range, written like a Composer constraint. 
 
 | Databasify | SDK range | Host binary |
 | --- | --- | --- |
-| Next release | `^0.1` | `0.1.0` |
+| Next release | `^0.1` | `0.1.1` |
 
 Before SDK `1.0`, any minor release may change the contract, so a Databasify release runs a single `0.x` minor. From `1.0`, minor releases only add commands and fields, and a range such as `^1.0 || ^2.0` covers an overlap between majors.
 
