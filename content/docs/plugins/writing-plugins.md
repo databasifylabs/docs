@@ -5,9 +5,9 @@ description: The package layout, the plugin class and the provider builders.
 
 The fastest start is one of the example plugins. Each is a GitHub template: choose **Use this template**, rename it, and install your copy.
 
-- [`example-dns-plugin`](https://github.com/databasifylabs/example-dns-plugin) for a DNS provider
-- [`example-server-plugin`](https://github.com/databasifylabs/example-server-plugin) for a server provider
-- [`example-database-plugin`](https://github.com/databasifylabs/example-database-plugin) for a database engine
+- [`plugin-example-dns`](https://github.com/databasifylabs/plugin-example-dns) for a DNS provider
+- [`plugin-example-server`](https://github.com/databasifylabs/plugin-example-server) for a server provider
+- [`plugin-example-database`](https://github.com/databasifylabs/plugin-example-database) for a database engine
 
 ## Layout
 
@@ -32,7 +32,8 @@ Databasify only reads `composer.json`, the folders it autoloads, a bundled `vend
         "databasify": {
             "plugin": "Acme\\Clickhouse\\ClickhousePlugin",
             "requires": "^0.1",
-            "icon": "icon.svg"
+            "icon": "icon.svg",
+            "engines": ["clickhouse"]
         }
     }
 }
@@ -46,6 +47,7 @@ Databasify only reads `composer.json`, the folders it autoloads, a bundled `vend
 | `extra.databasify.plugin` | Required. The plugin class. |
 | `extra.databasify.requires` | The Databasify versions the plugin works with, as a Composer-style constraint: `^0.1`, `~0.1.2`, `>=0.1 <0.3`, `^0.1 \|\| ^1.0`. Install and update refuse a plugin that doesn't match, and a plugin that stops matching after an upgrade is skipped with an error. Leave it out to allow any version. |
 | `extra.databasify.icon` | A file in `public/` shown beside the plugin. Defaults to `icon.svg`, if it exists. |
+| `extra.databasify.engines` | Every database engine id the plugin registers. Databasify reads it before any plugin code runs, to warn the admin that these are community engines. A plugin that registers an engine it didn't declare fails to boot. |
 
 `config('app.version')` returns the running Databasify version, for example `0.1.0`.
 
@@ -153,7 +155,7 @@ A record is `DnsRecord(type, name, content, id, managed)`. `content` is the addr
 
 **Mark your records.** Return `managed: true` only for records your driver created, for example ones carrying the `DnsRecord::MARKER` comment. Databasify refuses to take over a hostname that already has records it didn't create.
 
-See the [example DNS plugin](https://github.com/databasifylabs/example-dns-plugin) and the built-in Cloudflare driver in `app/DnsProviders/Drivers/Cloudflare`.
+See the [example DNS plugin](https://github.com/databasifylabs/plugin-example-dns) and the built-in Cloudflare driver in `app/DnsProviders/Drivers/Cloudflare`.
 
 ### Server providers
 
@@ -180,7 +182,7 @@ The driver extends `App\ServerProviders\Drivers\AbstractServerDriver`, is built 
 - `findKey(publicKey)`, which returns the id of an uploaded key with that public key or `null`, and `createKey(name, publicKey)`, which uploads it;
 - `createServer(NewProviderServer)`, `findServer(id)` and `deleteServer(id)`.
 
-Providers only order, find and delete servers. See the [example server plugin](https://github.com/databasifylabs/example-server-plugin) and the built-in Hetzner and DigitalOcean drivers in `app/ServerProviders/Drivers`.
+Providers only order, find and delete servers. See the [example server plugin](https://github.com/databasifylabs/plugin-example-server) and the built-in Hetzner and DigitalOcean drivers in `app/ServerProviders/Drivers`.
 
 ### Database engines
 
@@ -224,11 +226,25 @@ $this->databasify()->database('clickhouse')
 
 In a `ConnectionProfile`, `{host}`, `{port}`, `{username}`, `{password}`, `{database}` and `{ca}` in the command and notes are filled in for each database. `fixedUsername` names a user the engine always connects as, such as `default`, and `envKeys` maps each value to its `.env` key, or `null` to leave it out.
 
-**The image.** Every engine image runs the shared `databasify` wrapper, which answers the same typed commands for every engine: one JSON object on stdin and one on stdout, quick commands that reply at once, and long commands that start an operation Databasify polls. A command an engine doesn't offer answers `unsupported`, and Databasify hides that feature instead of failing. The image's `io.databasify.engine` label, not the plugin id, names the container (`databasify-<name>`) and its data folder (`/srv/<name>`).
+**Community engines.** An engine a plugin registers is a **community engine**. The Plugins page, the engine card on the create page and the database header show a **Community** badge. Before installing the plugin, the admin confirms a warning that the engine is built and supported by its author, not Databasify, and that bugs or data loss in it are the author's to fix. The warning comes back when an update declares a new engine. An update that drops an engine a database still uses is refused.
 
-The engine's own logic is Go code inside that wrapper, in [`databasifylabs/engines`](https://github.com/databasifylabs/engines): a package under `internal/engines/<name>` implementing `contracts.Engine`, and an image under `images/<name>`. Databasify installs the same pinned wrapper on every node, so an engine that lives only in a fork loses its code at the next wrapper update. A new engine therefore lands in `databasifylabs/engines` itself, as a pull request, before a plugin registers it. That repository's README is the command reference, and its image smoke test runs the engine conformance suite.
+**The image.** Every engine image runs `databasify`, a binary built on the public [engine SDK](https://github.com/databasifylabs/engine-sdk), as PID 1.
+- Every engine answers the same typed commands: one JSON object on stdin and one on stdout. Quick commands reply at once, and long commands start an operation Databasify polls.
+- A command an engine doesn't offer answers `unsupported`, and Databasify hides that feature instead of failing.
+- The image's `io.databasify.engine` label, not the plugin id, names the container (`databasify-<name>`) and its data folder (`/srv/<name>`).
 
-The [example database plugin](https://github.com/databasifylabs/example-database-plugin) registers **Example Cache** on the official Valkey image, so it needs no image of its own. The built-in engines are registered the same way in `app/Providers/EngineServiceProvider.php`, and their images live in [`databasifylabs/engines`](https://github.com/databasifylabs/engines).
+**Your engine's repository.** Start from [`databasifylabs/engine-template`](https://github.com/databasifylabs/engine-template).
+- It holds your Go code on the SDK, the Dockerfile, the smoke check, `versions.json` and two workflows that call the SDK's reusable ones.
+- It builds and passes the SDK's conformance suite from its first commit.
+- Its workflows run your tests, then build, smoke-test, scan and publish your images to `ghcr.io/<your owner>/databasify-<engine>`. Make those packages public, because Databasify pulls them without credentials.
+- The template's README walks from the first commit to a published image.
+
+**SDK versions.** Every image carries the SDK version it was built on in its `io.databasify.sdk` label, and each Databasify release runs one SDK range ([SDK support](/plugins/engine-sdk/)).
+- Databasify refuses an image outside its range before pulling it.
+- A database already running such an image becomes read-only until you publish one inside the range.
+- Updates reach databases only as images: in each database's weekly maintenance window, Databasify moves it to the newest image of its line.
+
+The [example database plugin](https://github.com/databasifylabs/plugin-example-database) registers **Example Cache** on the official Valkey image, so it needs no image of its own. The built-in engines are registered the same way in `app/Providers/EngineServiceProvider.php`. Each one lives in its own repository on the same SDK, for example [`databasifylabs/engine-postgres`](https://github.com/databasifylabs/engine-postgres).
 
 ## Forms
 

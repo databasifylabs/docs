@@ -13,9 +13,9 @@ Each example works as it is and is a GitHub template to start your own from:
 
 | Repository | Adds |
 | --- | --- |
-| [`databasifylabs/example-dns-plugin`](https://github.com/databasifylabs/example-dns-plugin) | **Example DNS**, a fake DNS provider that keeps records in a JSON file, so you can try the flow offline |
-| [`databasifylabs/example-server-plugin`](https://github.com/databasifylabs/example-server-plugin) | **Example Cloud**, a server provider that "orders" a server you already own |
-| [`databasifylabs/example-database-plugin`](https://github.com/databasifylabs/example-database-plugin) | **Example Cache**, an engine that reuses Valkey's driver, image and scripts and overrides one step |
+| [`databasifylabs/plugin-example-dns`](https://github.com/databasifylabs/plugin-example-dns) | **Example DNS**, a fake DNS provider that keeps records in a JSON file, so you can try the flow offline |
+| [`databasifylabs/plugin-example-server`](https://github.com/databasifylabs/plugin-example-server) | **Example Cloud**, a server provider that "orders" a server you already own |
+| [`databasifylabs/plugin-example-database`](https://github.com/databasifylabs/plugin-example-database) | **Example Cache**, a community engine registered on the official Valkey engine image |
 
 To write your own, see [Writing plugins](/plugins/writing-plugins/).
 

@@ -12,18 +12,11 @@ description: How engine updates and engine fixes are found and installed.
 
 You can also install an available update right away from **Settings → Version** or **Actions**.
 
-## Engine fixes without a restart
+## Engine fixes
 
-Each node runs `databasify`, a small program inside the engine container that the app calls to configure and operate the engine. Fixes to it are published on their own, as the `ghcr.io/databasifylabs/databasify-wrapper` image, and reach running databases without a restart and without an image update.
+Each node runs `databasify`, a small program inside the engine container that the app calls to configure and operate the engine. It ships inside the engine image, so its fixes reach a database the same way as engine patches: a rebuilt image installed in the weekly maintenance window, one node at a time. A rebuild of the same release shows as an available update too.
 
-- Each Databasify release follows one version of this program. When a fix is published under that version, the app notices within ten minutes, with no app update and no registry polling in between.
-- A database picks up the fix at its next change, such as a setting, a trusted source, a domain or a new node. That change starts an **Install databasify** operation, which copies the new program into every node, read-only nodes and standbys first. Nodes keep running and there is no failover. While it runs, the change is refused with a message to try again in a few minutes.
-- A database nobody changes keeps the version it has until its next change or image update.
-- Deleting a database, retrying its setup, failover, recovery, image updates and removing a server never wait for the install.
-- New nodes and image updates always get the current version.
-- A few long-running helper processes inside a node keep the older version until the node next restarts.
-
-Image updates, described above, are still how new engine patch releases reach a database.
+An image built on an [engine SDK](/plugins/engine-sdk/) this Databasify doesn't support is never installed. The database stays on its current image and you get a warning.
 
 ## Maintenance window
 
