@@ -4,6 +4,7 @@
   "pages": [
     "adding-a-server",
     "server-providers",
-    "operating-systems"
+    "operating-systems",
+    "engine-images"
   ]
 }
