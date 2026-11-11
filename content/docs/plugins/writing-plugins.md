@@ -72,7 +72,7 @@ final class ClickhousePlugin extends AbstractPlugin
 
         $this->databasify()->database('clickhouse')
             ->label('ClickHouse')
-            ->handler(Clickhouse::class)
+            ->image('ghcr.io/acme/databasify-clickhouse')
             ->register();
     }
 }
@@ -100,7 +100,7 @@ All six can type-hint dependencies, and the container fills them in.
 | Method | Meaning |
 | --- | --- |
 | `label(string)` | Name shown in the UI |
-| `handler(class-string)` | The driver class. It must extend the kind's abstract driver, listed below |
+| `handler(class-string)` | DNS and server providers: the driver class. It must extend the kind's abstract driver, listed below. Database engines have no driver |
 | `form(DynamicForm)` | DNS and server providers: the inputs asked for when an account is added. See [Forms](#forms) |
 | `icon(string)` | Icon URL. Defaults to `public/icons/<kind>-providers/<id>.svg` in your plugin, where `<kind>` is `dns`, `server` or `database` |
 | `instructions(list<string>)` | Steps shown beside the credential inputs. `[label](https://…)` becomes a link and `` `value` `` a chip |
@@ -184,36 +184,49 @@ Providers only order, find and delete servers. See the [example server plugin](h
 
 ### Database engines
 
+Databasify runs every engine through the `databasify` command inside the engine's container image. The image does the work on the server; the plugin only registers the engine, so it has no driver class and no server scripts.
+
 ```php
-$this->loadViewsFrom(__DIR__.'/../resources/views', 'clickhouse');
+use App\DTOs\Databases\ConnectionProfile;
 
 $this->databasify()->database('clickhouse')
     ->label('ClickHouse')
-    ->handler(Clickhouse::class)
     ->category('Application')
-    ->stopSeconds(120)
     ->image('ghcr.io/acme/databasify-clickhouse')
     ->versions('25.8', [['value' => '25.8', 'label' => 'ClickHouse 25.8']])
-    ->scripts('clickhouse::ssh.engines.clickhouse')
+    ->connection(new ConnectionProfile(
+        uriScheme: 'clickhouse',
+        uriQuery: '?secure=true',
+        tlsParameter: 'secure',
+        tlsMode: 'true',
+        command: 'clickhouse-client --secure -h {host} --port {port} -u {username} --password {password} -d {database}',
+        fixedUsername: null,
+        selectsDatabase: true,
+        envKeys: ['host' => 'DB_HOST', 'port' => 'DB_PORT', 'username' => 'DB_USERNAME', 'password' => 'DB_PASSWORD', 'database' => 'DB_DATABASE'],
+    ))
+    ->failoverHint('ClickHouse Keeper needs three members to keep a majority. Add one more standby.')
     ->register();
 ```
 
 | Method | Meaning |
 | --- | --- |
 | `category()` | `Application` or `Caching`, which groups the engine on the create page |
-| `stopSeconds()` | How long a node may take to stop cleanly |
-| `image()` | The container image without a tag. It must publish exact `<line>.x` tags |
-| `versions(default, lines)` | The version lines offered. Add `'recovery' => false` to a line without point-in-time recovery |
-| `scripts(prefix, overrides)` | Where the engine's bash step scripts live. A step resolves to `<prefix>.lines.<line>.<step>`, with dots in the line replaced by `_`. `overrides` maps a line to `[step => view]` to take single steps from elsewhere |
-| `directory()`, `systemUser()` | The data root and engine user. Default to `/srv/<id>` and the engine id |
-| `port()`, `poolPort()`, `peerPorts(ports, lines)` | The client port (default 25060), a connection pooler port, and ports only peers reach, optionally per line |
-| `nodeCertificates()`, `publicCertificate()`, `rsaServerKey()` | TLS file names under `<directory>/tls/`, whether to serve a public certificate, and whether the server key must be RSA |
-| `failoverHint()`, `persistenceChoice()` | The text shown when failover can't happen on its own, and whether users choose snapshot or append-only persistence |
+| `image()` | The container image without a tag. Defaults to `ghcr.io/databasifylabs/databasify-<id>` |
+| `versions(default, lines)` | The version lines offered. Each line is a tag prefix: Databasify picks the newest `<line>.x` tag and pins its digest. Add `'recovery' => false` to a line without point-in-time recovery |
+| `connection(profile, withPublicCertificate, service)` | How the connection details page builds the URI, the CLI command and the `.env` keys. `withPublicCertificate` replaces it once a domain with a public certificate is attached, and `service` adds a DNS-discovered connection, such as `mongodb+srv://` |
+| `environment(laravelConnection, extra)` | The Laravel connection name for the `.env` snippet, such as `pgsql`, plus extra keys |
+| `migrationSource(defaultPort, credentialsRequired, selectsDatabases)` | Lets users migrate into this engine, and sets what the source form asks for |
+| `failoverHint()` | The text shown when failover can't happen on its own |
 | `serviceRecord(prefix, options)` | Publish an SRV and TXT record for DNS-discovered clients, as MongoDB does |
+| `publicCertificate()` | Serve the zone's public certificate when a domain is attached, instead of the database's own CA |
+| `persistenceChoice()` | Let users choose snapshot or append-only persistence |
+| `readOnlyNodesVote()` | Count read-only nodes as failover voters, as Sentinel does |
 
-The driver extends `App\DatabaseProviders\Drivers\AbstractDatabaseDriver` and is built around its database (`$this->database`). The base class reads the settings above back from the registration, so a plugin can reuse a built-in driver under its own id. The [example database plugin](https://github.com/databasifylabs/example-database-plugin) does exactly that with Valkey.
+In a `ConnectionProfile`, `{host}`, `{port}`, `{username}`, `{password}`, `{database}` and `{ca}` in the command and notes are filled in for each database. `fixedUsername` names a user the engine always connects as, such as `default`, and `envKeys` maps each value to its `.env` key, or `null` to leave it out.
 
-An engine is the biggest kind of plugin. A driver groups its server steps into nodes, cluster, accounts, point-in-time recovery and migrations, and must ship every step script it uses. Read `app/DatabaseProviders` in the Databasify repository (one folder per engine in `Drivers/<Name>/`, family helpers in `Drivers/Shared/`) and its `adding-database-engine` skill before starting one.
+**The image.** It runs the `databasify` command and answers the engine API contract in [`databasifylabs/engine-api`](https://github.com/databasifylabs/engine-api): one JSON object on stdin and one on stdout, quick commands that reply at once, and long commands that start an operation Databasify polls. A command your engine doesn't offer answers `unsupported`, and Databasify hides that feature instead of failing. Label the image `io.databasify.engine=<name>`; that name, not the plugin id, names the container (`databasify-<name>`) and its data folder (`/srv/<name>`). Publish exact `<line>.x` release tags, and run the contract's conformance suite against the image before you publish it.
+
+The [example database plugin](https://github.com/databasifylabs/example-database-plugin) registers **Example Cache** on the official Valkey image, so it needs no image of its own. The built-in engines are registered the same way in `app/Providers/EngineServiceProvider.php`, and their images live in [`databasifylabs/engines`](https://github.com/databasifylabs/engines).
 
 ## Forms
 
