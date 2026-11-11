@@ -7,17 +7,25 @@ Every database engine, the six built-in ones and every community engine, is buil
 
 ## Supported versions
 
-Each Databasify release runs one SDK range, written like a Composer constraint. It also installs one official host binary, `ghcr.io/databasifylabs/databasify-host`, on every database server.
+Each Databasify release requires one SDK range, written like a Composer constraint in its config:
 
-| Databasify | SDK range | Host binary |
-| --- | --- | --- |
-| Next release | `^0.1` | `0.1.1` |
+```php
+'require' => [
+    'engine-sdk' => '^0.2',
+],
+```
+
+Engine images must be built on an SDK inside that range, and every database server gets the newest official host binary in it, `ghcr.io/databasifylabs/engine-sdk`.
+
+| Databasify | Requires |
+| --- | --- |
+| Next release | `engine-sdk ^0.2` |
 
 Before SDK `1.0`, any minor release may change the contract, so a Databasify release runs a single `0.x` minor. From `1.0`, minor releases only add commands and fields, and a range such as `^1.0 || ^2.0` covers an overlap between majors.
 
 ## What Databasify checks
 
-- When it creates a database, adds a node or looks for the weekly update, Databasify reads the image's labels from the registry. It refuses an image outside its range before anything is pulled, for example: "Example Cache 9.0.3 is built on SDK 0.2.0; this Databasify supports ^0.1."
+- When it creates a database, adds a node or looks for the weekly update, Databasify reads the image's labels from the registry. It refuses an image outside its range before anything is pulled, for example: "Example Cache 9.0.3 is built on SDK 0.3.0; this Databasify supports ^0.2."
 - After deploying a node, it asks the engine which SDK it runs and fails the deploy when it is outside the range.
 - In the weekly maintenance window, a newer image outside the range is skipped. The database stays on its current image and you get a warning.
 

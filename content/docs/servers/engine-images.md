@@ -15,7 +15,7 @@ When you create a database, Databasify picks the newest release in the [version 
 
 A new node, a redeploy and an image update all go through the same steps:
 
-1. **Install the host binary.** Each Databasify release pins one official host binary, `ghcr.io/databasifylabs/databasify-host:<version>`, and Databasify follows that tag's digest. Before every deploy it copies `/databasify` out of that image to `/usr/local/bin/databasify` on the server, and replaces the file only when the bytes differ. No code from an engine image is installed on the server, so nothing of a community engine stays behind once it is removed.
+1. **Install the host binary.** Databasify picks the newest official host binary inside the SDK range it requires, `ghcr.io/databasifylabs/engine-sdk:<version>`, and pins it by digest. Before every deploy it copies `/databasify` out of that image to `/usr/local/bin/databasify` on the server, and replaces the file only when the bytes differ. No code from an engine image is installed on the server, so nothing of a community engine stays behind once it is removed.
 2. **`databasify host deploy`** runs on the server, outside any container. It:
    - refuses an image without an `io.databasify.sdk` label;
    - pulls the image by digest when the server doesn't have it yet;
