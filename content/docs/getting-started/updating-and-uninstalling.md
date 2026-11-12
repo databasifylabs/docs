@@ -7,15 +7,31 @@ Databasify is installed in `/opt/databasify`. All its settings are in `/opt/data
 
 ## Update
 
+### From the app
+
+Open **Updates** in the sidebar. Databasify checks for a new release once a day; **Check now** checks right away. When a release is out, a badge shows on **Updates** and the page shows the release notes of the newest release, with a link to all releases on GitHub.
+
+Choose **Update to** the new version and confirm. The page follows the update step by step. Databasify is offline for about a minute while it restarts, and the page reconnects on its own. The databases on your servers keep running the whole time. Any signed-in user can update.
+
+If the new version does not become healthy, the update rolls back to the version that was running. The page then says which step failed and shows the update log, with **Try again**.
+
+The **Updates** page exists only on servers set up with the install script, which installs the small host service that runs updates for the app. Servers installed with Databasify 0.1.0 get it the first time you update them over SSH.
+
+### Over SSH
+
 ```bash
 curl -fsSL https://get.databasify.io/update.sh | sudo bash
 ```
 
-The update script downloads the latest release files, adds any new settings to `.env` without changing your existing ones, pulls the new images, restarts Databasify and waits until it is healthy. If database operations are running, it lists them and asks before the restart stops them; without a terminal it restarts and names what it interrupted. Work a restart stops is marked as interrupted when Databasify starts again. It then removes old Databasify images. The full output is in `/opt/databasify/update.log`.
+### What an update does
 
-The update also recomputes the background worker counts (`HORIZON_*_MAX_PROCESSES`) from the server's memory and CPUs. If they differ from the values in `.env`, it shows both and asks before changing them. Without a terminal it keeps your values; set `DATABASIFY_YES=true` to accept the new ones.
+Both ways run the same update script. It downloads the latest release files, refreshes the host update service, adds any new settings to `.env` without changing your existing ones, pulls the new images, restarts Databasify and waits until it is healthy. If restarting fails or the new version is not healthy, it starts the previous image again. It then removes old Databasify images.
 
-Databasify runs the `latest` image (`DATABASIFY_VERSION=latest` in `.env`). To stay on one release, change it to a release tag, for example `DATABASIFY_VERSION=0.2.0`.
+Background jobs get up to 30 minutes to finish before the old container stops. Only one update runs at a time. The log of the latest update is in `/opt/databasify/updater/update.log`.
+
+The update also recomputes the background worker counts (`HORIZON_*_MAX_PROCESSES`) from the server's memory and CPUs. If they differ from the values in `.env`, it shows both and asks before changing them. Without a terminal, which includes updates started from the app, it keeps your values; set `DATABASIFY_YES=true` to accept the new ones.
+
+Databasify runs the `latest` image (`DATABASIFY_VERSION=latest` in `.env`). To stay on one release, change it to a release tag, for example `DATABASIFY_VERSION=0.2.0`. A pinned server shows the pinned version on the **Updates** page and offers no update.
 
 The running version shows next to the Databasify logo in the sidebar and at the bottom of the sign-in page.
 

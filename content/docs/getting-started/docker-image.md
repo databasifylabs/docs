@@ -56,7 +56,7 @@ docker run -d --name databasify \
   ghcr.io/databasifylabs/databasify:latest
 ```
 
-On start, the container runs the database migrations, releases any work a previous run left unfinished, then starts serving. Open `APP_URL` and create the owner account.
+On start, the container runs the database migrations, then starts serving. Open `APP_URL` and create the owner account.
 
 ## HTTPS
 
@@ -64,4 +64,4 @@ Databasify serves plain HTTP. Put it behind your platform's HTTPS proxy, or behi
 
 ## Updating
 
-Pull the new tag and recreate the container with the same volume and settings. Operations that were running when the old container stopped are marked as interrupted when the new one starts, so check that nothing important is running before you update.
+A container you run yourself has no **Updates** page, because the host service that runs updates comes with the install script. Pull the new tag and recreate the container with the same volume and settings. Background jobs that are still running when the old container stops are marked failed, and their database operations released, within about two hours, so check that nothing important is running before you update.
