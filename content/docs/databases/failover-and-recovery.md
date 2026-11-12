@@ -20,8 +20,12 @@ With fewer nodes, the database page shows a hint to add one more.
 
 **Actions → Recover** is for a database that has lost quorum, for example a primary and one standby after the primary went down. The most up-to-date reachable node becomes primary and the others rejoin it.
 
-- Recovery is refused while a majority of members still answers. Use failover then.
+- While a majority of members still answers, Recover only rejoins members that are running but outside the cluster, and leaves the primary and the other members alone. With no such member, it is refused. Use failover then.
 - When Databasify reaches only a minority of members, you must confirm **The unreachable members are down**. If they are still running but cut off from Databasify, recovering creates a second primary.
+
+## A member that restarts
+
+A member that stops and starts again, for example after a server reboot, rejoins the cluster on its own and catches up from the others, except on MySQL. A restarted MySQL member starts outside the group and shows as offline until you run **Actions → Recover**, which rejoins it.
 
 ## Durability
 

@@ -14,7 +14,7 @@ description: The database engines and version lines Databasify runs.
 
 PostgreSQL [connection pools](/databases/connection-pools/) listen on port 25061.
 
-You pick the engine and version line when you [create a database](/getting-started/first-database/). The form preselects PostgreSQL 18, MySQL 8.4, MariaDB 11.8, MongoDB 8.0, Valkey 9 and Redis 8.
+You pick the engine and version line when you [create a database](/getting-started/first-database/). The form preselects PostgreSQL 18, MySQL 8.4, MariaDB 12.3, MongoDB 8.0, Valkey 9 and Redis 8.
 
 ## Version lines and updates
 
