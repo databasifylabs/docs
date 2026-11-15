@@ -56,7 +56,7 @@ docker run -d --name databasify \
   ghcr.io/databasifylabs/databasify:latest
 ```
 
-On start, the container runs the database migrations, then starts serving. Open `APP_URL` and create the owner account.
+On start, the container runs the database migrations, then starts serving. Open `APP_URL` right away and create the owner account: until it exists, whoever opens the address first can create it. To create it from the host instead, run `docker exec -it databasify databasify artisan setup:owner --name='Your Name' --email='you@example.com'`, which asks for the password; the setup page then never opens.
 
 ## HTTPS
 

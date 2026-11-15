@@ -45,6 +45,28 @@ To run Databasify on a container platform or a Docker host without the installer
 
 Open the address the installer printed. The first visit asks you to create the owner account with your name, email address and password. There is no public sign-up after that.
 
+Until the owner account exists, whoever opens the address first can create it. Open it right after the installer finishes, or create the owner during the install instead.
+
+### Create the owner during the install
+
+Pass your name and email address to the installer. It asks for the password without showing it, creates the owner once Databasify is healthy, and the setup page never opens:
+
+```bash
+curl -fsSL https://get.databasify.io/install.sh | sudo DATABASIFY_OWNER_NAME='Your Name' DATABASIFY_OWNER_EMAIL='you@example.com' bash
+```
+
+For an unattended install, also set `DATABASIFY_OWNER_PASSWORD`. Take it from a secret store rather than typing it on the command line, where it stays in your shell history.
+
+The installer removes these settings from its environment straight away and never writes the password to disk. If the owner can't be created, the install stops with the error, so it never finishes with the setup page left open. Set the name and email together, or neither.
+
+### Create the owner on an installed server
+
+On a server where nobody has created the owner yet, you can create it over SSH instead of in the browser. The command asks for the password:
+
+```bash
+cd /opt/databasify && sudo docker compose exec app databasify artisan setup:owner --name='Your Name' --email='you@example.com'
+```
+
 ## Email
 
 Email is needed for [alerts](/operations/monitoring-and-alerts/) and password resets. By default, mail is only written to the log. To send real email, set the `MAIL_*` settings in `/opt/databasify/.env` (`MAIL_MAILER`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM_ADDRESS`), then recreate the containers:
