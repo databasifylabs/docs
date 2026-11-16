@@ -12,46 +12,46 @@ The fastest start is one of the example plugins. Each is a GitHub template: choo
 ## Layout
 
 ```
-composer.json                               package name, version, autoload, plugin class
+plugin.json                                 key, name, version, author, class, autoload
 src/ExampleDnsPlugin.php                    the plugin, a Laravel service provider
 src/ExampleDns.php                          the driver
 public/icon.svg                             plugin icon, shown on the Plugins page
 public/icons/dns-providers/example-dns.svg  provider icon
 ```
 
-Databasify only reads `composer.json`, the folders it autoloads, a bundled `vendor/` and `public/`. Other folders, such as `resources/views` or `database/migrations`, are loaded by your plugin class.
+Databasify only reads `plugin.json`, the folders it autoloads, a bundled `vendor/` and `public/`. Other folders, such as `resources/views` or `database/migrations`, are loaded by your plugin class.
 
-## composer.json
+## plugin.json
 
 ```json
 {
-    "name": "acme/clickhouse",
+    "key": "acme/clickhouse",
+    "name": "ClickHouse",
     "version": "1.0.0",
-    "autoload": { "psr-4": { "Acme\\Clickhouse\\": "src/" } },
-    "extra": {
-        "databasify": {
-            "plugin": "Acme\\Clickhouse\\ClickhousePlugin",
-            "requires": "^0.2",
-            "icon": "icon.svg",
-            "engines": ["clickhouse"]
-        }
-    }
+    "author": { "name": "Acme", "url": "https://acme.example" },
+    "class": "Acme\\Clickhouse\\ClickhousePlugin",
+    "autoload": { "Acme\\Clickhouse\\": "src/" },
+    "requires": "^0.2",
+    "icon": "icon.svg",
+    "engine": "clickhouse"
 }
 ```
 
 | Key | Meaning |
 | --- | --- |
-| `name` | Required. The part after the slash is the **plugin id** (`clickhouse`): lowercase letters, digits and dashes, at most 40 characters, unique among installed plugins, and not `core`. |
-| `version` | Shown on the Plugins page. Defaults to `dev`. |
-| `autoload.psr-4` | Required. Databasify registers these namespaces itself. Nothing runs `composer install` on the server. |
-| `extra.databasify.plugin` | Required. The plugin class. |
-| `extra.databasify.requires` | The Databasify versions the plugin works with, as a Composer-style constraint: `^0.2`, `~0.2.1`, `>=0.2 <0.4`, `^0.2 \|\| ^1.0`. Install and update refuse a plugin that doesn't match, and a plugin that stops matching after an upgrade is skipped with an error. Leave it out to allow any version. |
-| `extra.databasify.icon` | A file in `public/` shown beside the plugin. Defaults to `icon.svg`, if it exists. |
-| `extra.databasify.engines` | Every database engine id the plugin registers. Databasify reads it before any plugin code runs, to warn the admin that these are community engines, unless the plugin comes from the `databasifylabs` organization. A plugin that registers an engine it didn't declare fails to boot. |
+| `key` | Required. Identifies the plugin: a vendor and a name of lowercase letters, digits and dashes, each at most 40 characters, such as `acme/clickhouse`. Two vendors can use the same name. Files live in `storage/plugins/<vendor>/<name>`. |
+| `name` | Required. Shown on the Plugins page, for example `ClickHouse`. |
+| `version` | Required. Shown on the Plugins page. |
+| `author` | `name` is shown under the plugin and `url` (http or https) links it. Defaults to the key's vendor. |
+| `class` | Required. The plugin class. |
+| `autoload` | Required. PSR-4 namespaces and their folders. Databasify registers them itself; nothing runs `composer install` on the server. |
+| `requires` | The Databasify versions the plugin works with, as a Composer-style constraint: `^0.2`, `~0.2.1`, `>=0.2 <0.4`, `^0.2 \|\| ^1.0`. Install and update refuse a plugin that doesn't match, and a plugin that stops matching after an upgrade is skipped with an error. Leave it out to allow any version. |
+| `icon` | A file in `public/` shown beside the plugin. Defaults to `icon.svg`, if it exists. |
+| `engine` | The one database engine id the plugin registers. Databasify reads it before any plugin code runs, to warn the admin that this is a community engine, unless the plugin comes from the `databasifylabs` organization. A plugin that registers another engine fails to boot. |
 
 `config('app.version')` returns the running Databasify version, for example `0.2.0`.
 
-**Dependencies.** Databasify's own packages, including Laravel, are already loaded. If your plugin needs other packages, run `composer install --no-dev` and ship `vendor/` in the zip. Databasify loads `vendor/autoload.php` when it is there.
+**Dependencies.** Databasify's own packages, including Laravel, are already loaded. If your plugin needs other packages, keep your own `composer.json` for them, run `composer install --no-dev` and ship `vendor/` in the zip; Databasify never reads that `composer.json`. Databasify loads `vendor/autoload.php` when it is there.
 
 ## The plugin class
 
@@ -252,7 +252,7 @@ The driver extends `App\Engines\Drivers\AbstractEngineDriver`. It declares the e
 Start from [`databasifylabs/engine-template`](https://github.com/databasifylabs/engine-template). It holds only the image: the Dockerfile, the smoke check, `versions.json` and two workflows that build, smoke-test, scan and publish your images to `ghcr.io/<your owner>/databasify-<engine>`. Make those packages public, because Databasify pulls them without credentials.
 
 - Every image runs `databasify`, the frozen [engine SDK](https://github.com/databasifylabs/engine-sdk) 1.0 runtime, as PID 1. It runs the driver's scripts and supervises the engine's processes; it holds no engine code.
-- The image's `io.databasify.engine` label, not the plugin id, names the container (`databasify-<name>`) and its data folder (`/srv/<name>`).
+- The image's `io.databasify.engine` label, not the plugin key, names the container (`databasify-<name>`) and its data folder (`/srv/<name>`).
 
 **SDK versions.** Every image carries the SDK version it was built on in its `io.databasify.sdk` label, and each Databasify release runs one SDK range ([SDK support](/plugins/engine-sdk/)).
 - Databasify refuses an image outside its range before pulling it.
@@ -291,4 +291,4 @@ Everything in `public/` is served at `/plugin-assets/<plugin id>/…`. Icons are
 
 ## Test your plugin
 
-Zip the folder and install it from the Plugins page with **Install plugin → Upload a zip**, or push it to GitHub and install `owner/repo`. Installed plugins are recorded in the `plugins` table and their files live in `storage/plugins/<plugin id>`. Use **Update** to load a new version.
+Zip the folder and install it from the Plugins page with **Install plugin → Upload a zip**, or push it to GitHub and install `owner/repo`. Installed plugins are recorded in the `plugins` table and their files live in `storage/plugins/<vendor>/<name>`. Use **Update** to load a new version.
