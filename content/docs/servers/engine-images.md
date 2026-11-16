@@ -7,7 +7,7 @@ Each database node runs in one Docker container on its server, from a Databasify
 
 ## The images
 
-Engine images are published as `ghcr.io/databasifylabs/databasify-<engine>`, tagged with the engine release, for example `databasify-postgres:18.6`. Each image holds the engine and `databasify`, the command that configures and operates it, built on the public [engine SDK](/plugins/engine-sdk/). Each engine lives in its own repository, such as [`databasifylabs/engine-postgres`](https://github.com/databasifylabs/engine-postgres).
+Engine images are published as `ghcr.io/databasifylabs/databasify-<engine>`, tagged with the engine release, for example `databasify-postgres:18.6`. Each image holds the engine, its tools and `databasify`, the runtime from the public [engine SDK](/plugins/engine-sdk/). The runtime supervises the engine's processes and runs the scripts Databasify sends it; the engine's behaviour lives in Databasify's drivers. Each engine lives in its own repository, such as [`databasifylabs/engine-postgres`](https://github.com/databasifylabs/engine-postgres).
 
 When you create a database, Databasify picks the newest release in the [version line](/databases/engines/#version-lines-and-updates) you chose and stores its digest. Every node of that database pulls the image by that digest, so all nodes run byte-identical images even if the tag moves later. The digest only changes when an [update](/operations/updates-and-maintenance/) is installed.
 

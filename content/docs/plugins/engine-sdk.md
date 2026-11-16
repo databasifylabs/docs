@@ -3,7 +3,7 @@ title: Engine SDK support
 description: Which engine SDK versions each Databasify release runs.
 ---
 
-Every database engine, the six built-in ones and every community engine, is built on the public [engine SDK](https://github.com/databasifylabs/engine-sdk), the Go module `github.com/databasifylabs/engine-sdk`. Each engine image records the exact SDK version it was built on in its `io.databasify.sdk` label.
+Every database engine image, for the six built-in engines and every community engine, runs `databasify`, the runtime from the public [engine SDK](https://github.com/databasifylabs/engine-sdk), as PID 1. It runs the scripts of the engine's driver and supervises its processes; engine authors copy it into their image and write no code against it. Each engine image records the exact SDK version it was built on in its `io.databasify.sdk` label.
 
 ## Supported versions
 
@@ -11,7 +11,7 @@ Each Databasify release requires one SDK range, written like a Composer constrai
 
 ```php
 'require' => [
-    'engine-sdk' => '^0.2',
+    'engine-sdk' => '^0.2.2 || ^1.0',
 ],
 ```
 
@@ -19,13 +19,13 @@ Engine images must be built on an SDK inside that range, and every database serv
 
 | Databasify | Requires |
 | --- | --- |
-| Next release | `engine-sdk ^0.2` |
+| 0.2 | `engine-sdk ^0.2.2 \|\| ^1.0` |
 
-Before SDK `1.0`, any minor release may change the contract, so a Databasify release runs a single `0.x` minor. From `1.0`, minor releases only add commands and fields, and a range such as `^1.0 || ^2.0` covers an overlap between majors.
+SDK `1.0` is the final runtime: later `1.x` releases only fix bugs, and every new engine feature is a script in its driver. `^0.2.2` stays in the range so databases on the images Databasify 0.1 deployed keep running until their weekly update.
 
 ## What Databasify checks
 
-- When it creates a database, adds a node or looks for the weekly update, Databasify reads the image's labels from the registry. It refuses an image outside its range before anything is pulled, for example: "Example Cache 9.0.3 is built on SDK 0.3.0; this Databasify supports ^0.2."
+- When it creates a database, adds a node or looks for the weekly update, Databasify reads the image's labels from the registry. It refuses an image outside its range before anything is pulled, for example: "Example Engine 13.7 is built on SDK 2.0.0; this Databasify supports ^0.2.2 || ^1.0."
 - After deploying a node, it asks the engine which SDK it runs and fails the deploy when it is outside the range.
 - In the weekly maintenance window, a newer image outside the range is skipped. The database stays on its current image and you get a warning.
 
@@ -40,9 +40,9 @@ When a Databasify upgrade moves past an SDK, a database whose image is built on 
 Before you upgrade Databasify, list the databases the new range would make read-only:
 
 ```bash
-php artisan databases:check-sdks --range="^0.2"
+php artisan databases:check-sdks --range="^1.0"
 ```
 
 ## For engine authors
 
-Rebuild your images on a supported SDK when it moves: update `engine-sdk` in `go.mod` and the `sdk` pin in `versions.json`, then push. The [engine template](https://github.com/databasifylabs/engine-template) walks through the whole release.
+Build your images on SDK `1.0`: keep the template's `AS sdk` stage and the `sdk` pin in `versions.json` on the same release, then push. When a `1.x` bug-fix release comes out, move both pins to it and push again. The [engine template](https://github.com/databasifylabs/engine-template) walks through the whole release.
