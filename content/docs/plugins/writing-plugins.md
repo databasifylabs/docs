@@ -47,7 +47,7 @@ Databasify only reads `composer.json`, the folders it autoloads, a bundled `vend
 | `extra.databasify.plugin` | Required. The plugin class. |
 | `extra.databasify.requires` | The Databasify versions the plugin works with, as a Composer-style constraint: `^0.2`, `~0.2.1`, `>=0.2 <0.4`, `^0.2 \|\| ^1.0`. Install and update refuse a plugin that doesn't match, and a plugin that stops matching after an upgrade is skipped with an error. Leave it out to allow any version. |
 | `extra.databasify.icon` | A file in `public/` shown beside the plugin. Defaults to `icon.svg`, if it exists. |
-| `extra.databasify.engines` | Every database engine id the plugin registers. Databasify reads it before any plugin code runs, to warn the admin that these are community engines. A plugin that registers an engine it didn't declare fails to boot. |
+| `extra.databasify.engines` | Every database engine id the plugin registers. Databasify reads it before any plugin code runs, to warn the admin that these are community engines, unless the plugin comes from the `databasifylabs` organization. A plugin that registers an engine it didn't declare fails to boot. |
 
 `config('app.version')` returns the running Databasify version, for example `0.2.0`.
 
@@ -228,7 +228,7 @@ $this->databasify()->database('clickhouse')
 
 In a `ConnectionProfile`, `{host}`, `{port}`, `{username}`, `{password}`, `{database}` and `{ca}` in the command and notes are filled in for each database. `fixedUsername` names a user the engine always connects as, such as `default`, and `envKeys` maps each value to its `.env` key, or `null` to leave it out.
 
-**Community engines.** An engine a plugin registers is a **community engine**. The Plugins page, the engine card on the create page and the database header show a **Community** badge. Before installing the plugin, the admin confirms a warning that the engine is built and supported by its author, not Databasify, and that bugs or data loss in it are the author's to fix. The warning comes back when an update declares a new engine. An update that drops an engine a database still uses is refused.
+**Community engines.** An engine a plugin registers is a **community engine**, unless the plugin was installed from a GitHub repository owned by `databasifylabs`: those plugins are official and their engines are shown as Databasify's. An uploaded zip is always community, even of an official plugin, because only the download source shows who published it. The Plugins page, the engine card on the create page and the database header show a **Community** badge. Before installing the plugin, the admin confirms a warning that the engine is built and supported by its author, not Databasify, and that bugs or data loss in it are the author's to fix. The warning comes back when an update declares a new engine. An update that drops an engine a database still uses is refused.
 
 #### The driver
 
