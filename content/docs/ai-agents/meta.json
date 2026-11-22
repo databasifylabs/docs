@@ -1,0 +1,9 @@
+{
+  "title": "AI agents",
+  "defaultOpen": true,
+  "pages": [
+    "mcp-server",
+    "agent-setup",
+    "mcp-tools"
+  ]
+}
