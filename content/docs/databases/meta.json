@@ -7,6 +7,7 @@
     "connecting",
     "users-and-schemas",
     "connection-pools",
+    "extensions",
     "settings",
     "failover-and-recovery"
   ]
